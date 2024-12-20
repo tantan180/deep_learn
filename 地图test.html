@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>我国GIS研究生教育资源空间分布格局研究</title>
+    <style>html,body,#viewDiv{
+        pading:0;
+        marger:0;
+        height: 100%;
+        width: 100%;
+    }
+
+
+    </style>
+    <style>
+        *{
+            margin:0;
+            padding: 0
+        }
+        html,body
+        {
+            height: 100%;
+        }
+        .top{
+            height: 50px;
+            width: 100%;
+            background-color: rgba(66, 120, 66, 0.8);
+        }
+        .main{
+            float: left;
+            width: 100%;
+            background-color: rgba(200,150, 214, 0.8);
+        }
+        .main-content{
+            height: 500px;
+            background-color: rgba(150, 200, 214, 0.8);
+
+            margin: 0 200px;
+        }
+        .left{
+            width: 200px;
+            height:300px;
+            float: left;
+            background-color: rgba(225, 125, 0, 0.8);
+            margin-left: -100%;
+        }
+        .right{
+            width: 200px;
+            height: 500px;
+            float: left;
+            background-color: rgba(90, 243, 151, 0.8);
+            margin-left: -200px;
+        }
+        .clear{
+            width: 100%;
+            height: 50px;
+            clear: both;
+            background-color: rgba(90, 50, 151, 0.8);
+        }
+        #menu {
+            position: relative;
+            background-color:#dcc9c1;
+            width: 100%;
+            height: 60px;
+        }
+
+        ul {
+            list-style: none;
+            display: inline-block;
+            padding-left: 140px;
+        }
+
+        ul li {
+            line-height: 60px;
+            text-align: center;
+            position: relative;
+            float: left;
+        }
+        ul li ul {
+            position: absolute;
+            left: 0;
+            top: 60px;
+            display: none;
+            padding-left: 0;
+            z-index: 9999;
+        }
+        ul li:hover ul {
+            display: block;
+        }
+        ul li ul li {
+            float: none;
+            margin-top: 2px;
+            background-color: #dcc9c1;
+        }
+        ul li ul li a:hover {
+            color: #FFF;
+            background-color: #ccc;
+        }
+        a {
+            text-decoration: none;
+            color: rgb(13, 6, 6);
+            display: block;
+            padding: 0 20px;
+            white-space: nowrap;
+            font-family:"仿宋";
+            font-weight: bold;
+        }
+        a:hover {
+            color: #FFF;
+            background-color: #ccc;
+        }
+        .esri-popup .esri-popup-header .esri-title {
+            font-size: 18px;
+            font-weight: bolder;
+        }
+
+        .esri-popup .esri-popup-body .esri-popup-content {
+            font-size: 14px    ;
+        }
+
+    </style>
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            /*overflow: hidden;*/
+        }
+        #topbar {
+            background: #fff;
+            padding: 10px;
+        }
+        #paneDiv1 {
+            top: 10px;
+            left: 62px;
+            padding: 0 12px 0 12px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        /* topbar1{
+             background: #fff;
+             padding: 10px;
+             position: absolute;
+             right:15px;
+             top:15px;
+         }*/
+        .action-button {
+            font-size: 16px;
+            background-color: transparent;
+            border: 1px solid #d3d3d3;
+            color: #6e6e6e;
+            height: 32px;
+            width: 32px;
+            text-align: center;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-button:hover,
+        .action-button:focus {
+            background: #0079c1;
+            color: #e4e4e4;
+        }
+
+        .active {
+            background: #0079c1;
+            color: #e4e4e4;
+        }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css"/>
+    <script src="https://js.arcgis.com/4.26/"></script>
+    <script>require(["esri/Map",//
+        "esri/views/MapView",//
+        "esri/layers/MapImageLayer",//
+        "esri/widgets/BasemapGallery",//
+        "esri/widgets/BasemapToggle",//
+        "esri/widgets/Home",//
+        "esri/widgets/LayerList",//
+        "esri/widgets/Legend",//
+        "esri/widgets/ScaleBar",//
+        "esri/widgets/Compass",//
+        "esri/widgets/Locate",//
+        "esri/widgets/Search",//
+        "esri/widgets/Zoom",
+        "esri/widgets/DistanceMeasurement2D",//
+        "esri/widgets/AreaMeasurement2D",//
+        "esri/Graphic",//
+        "esri/geometry/Circle",//
+        "esri/widgets/Sketch",//
+        "esri/layers/GraphicsLayer",//
+        "esri/rest/geoprocessor",
+        "esri/rest/route",
+        "esri/rest/support/RouteParameters",
+        "esri/rest/support/FeatureSet",
+        "esri/rest/support/RouteResult",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Popup"
+    ], function(Map, MapView,MapImageLayer,BasemapGallery,BasemapToggle,
+                Home,LayerList,Legend,ScaleBar,Compass,Locate,Search,
+                Zoom,DistanceMeasurement2D,AreaMeasurement2D,
+                Graphic,Circle,Sketch,GraphicsLayer,geoprocessor,route,
+                RouteParameters,
+                FeatureSet,RouteResult,FeatureLayer,Popup)  {
+
+        let activeWidget = null;
+        /*MapImageLayer*/
+        var mapImageLayer=new MapImageLayer({
+            url:"http://localhost:6080/arcgis/rest/services/test/GIS_study/MapServer",
+            outFields: ["*"],
+            popupTemplate: {
+                title: "...",
+                content: "..."
+            }, title:"教育资源图层"
+        });
+        var tempGraphicsLayer = new GraphicsLayer({
+            title:"编辑图层"
+        });
+        var fly2=new FeatureLayer({
+            url:"http://localhost:6080/arcgis/rest/services/test/net_work_line/MapServer/7",
+            title:"路线图层"
+        });
+        const routeTask =
+            "http://localhost:6080/arcgis/rest/services/test/net_work_line/NAServer/Route";
+        const routeParams = new RouteParameters({
+            stops: new FeatureSet()
+            /* outSpatialReference: {
+                 wkid: 3857
+             }*/
+        });
+        //站点样式
+        const stopSymbol = {
+            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+            style: "cross",
+            size: 15,
+            /* outline: {
+                 width: 4
+             }*/
+        };
+        // Define the symbology used to display the route，路线样式
+        const routeSymbol = {
+            type: "simple-line",
+            color: [0, 0, 255, 0.5],
+            width: 5
+        };
+        //搜索图层
+
+        //Map
+        var mymap=new Map({
+            basemap:"streets",
+            layers:[mapImageLayer,tempGraphicsLayer,fly2]//添加图层
+        });
+        //最短路径图层
+        var view=new MapView({
+            container:"viewDiv",//容器
+            map:mymap,//地图
+            zoom:4,//放大比例
+            center:[120,32],//中心点
+            // popup:{
+            //      dockEnabled:true,
+            //      dockOptions:"top-right",
+            //      breakpoints:false}
+            popup: {
+                dockEnabled: true,
+                dockOptions: {
+                    position: "top-right",
+                    breakpoint: true
+                }
+            }
+        });
+        view.on("click", addStop);//添加断点
+        //最短路线图层
+        const routeLayer = new GraphicsLayer({
+            title: "最短路线图层"
+        });
+        mymap.add(routeLayer);
+
+        //编辑工具
+        view.when(() => {
+            const sketch = new Sketch({
+                layer: tempGraphicsLayer,
+                view: view,
+                creationMode: "update",
+                container: "sketch"
+            });
+        });
+        function addStop(event) {
+            // Add a point at the location of the map click
+            const stop = new Graphic({
+                geometry: event.mapPoint,
+                symbol: stopSymbol
+            });
+            routeLayer.add(stop);
+
+            routeParams.stops.features.push(stop);
+            if (routeParams.stops.features.length >= 2) {
+                route.solve(routeTask, routeParams).then(showRoute);
+            }
+        }
+        // Adds the solved route to the map as a graphic
+        function showRoute(data) {
+            const routeResult = data.routeResults[0].route;
+            routeResult.symbol = routeSymbol;
+            routeLayer.add(routeResult);
+        }
+        //地图切换
+        var basemapGallery = new BasemapGallery({
+            view: view});
+        view.ui.add(basemapGallery, {position: "top-right"});/*右上角*/
+        //地图切换按钮
+        var basemapToggle = new BasemapToggle({
+            view: view,
+            nextBasemap: "satellite"});//卫星地图
+        view.ui.add(basemapToggle, "top-right");/*右上角*/
+        //默认范围按钮
+        var homeWidget = new Home({
+            view: view});
+        view.ui.add(homeWidget, "top-left");
+        //图层列表
+        view.when(function () {
+            var layerList = new LayerList({
+                view: view,
+                listItemCreatedFunction: function (event) {
+                    const item = event.item;
+                    if (item.layer.type != "group") {
+                        item.panel = {
+                            content: "legend",
+                            open:false
+                        };
+                    }
+                },
+                container: "layerlist"
+            });
+        })
+
+        /*//图例
+        var legend = new Legend({view: view});
+        view.ui.add(legend, "bottom-left");*/
+        //比例尺
+        var scaleBar = new ScaleBar({
+            view: view,
+            style: " ruler ", //line,ruler
+            //When unit is set to dual, the style will always be line.
+            unit: "metric" });
+        view.ui.add(scaleBar, {position: "bottom-right"});
+        //指南针，Right-click +drag旋转地图，然后点击Compass按钮可回到正北方向
+        var compassWidget = new Compass({
+            view: view});
+        view.ui.add(compassWidget, "top-left");
+        //定位按钮
+        var Locatebtn = new Locate({view: view,});
+        view.ui.add(Locatebtn , {position: "top-left"});
+        //搜索按钮
+        var searchWidget = new Search({
+            view: view,
+            container: "search",
+            sources: [{
+                featureLayer: {
+                    url:
+                        "http://localhost:6080/arcgis/rest/services/paper/MyMapService/MapServer/61",
+                    popupTemplate: {
+                        title: "该学校正高级教师数量",
+                        overwriteActions: true
+                    }
+                },
+                searchFields: ["School"],
+                displayField: ["Senior"],
+                exactMatch: true,
+                //outFields: ["*"],
+                name: "搜索结果",
+            }]
+        });
+        view.ui.add(searchWidget, {
+            position: "top-left",
+            index: 0});
+        //渲染
+        var sym1_1 = {
+            type:"simple-fill",
+            color:[236,252,204],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym2_2 = {
+            type:"simple-fill",
+            color:[218,240,158],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym3_3 = {
+            type:"simple-fill",
+            color:[199,227,113],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym4_4 = {
+            type:"simple-fill",
+            color:[180,217,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym5_5 = {
+            type:"simple-fill",
+            color:[150,217,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym6_6 = {
+            type:"simple-fill",
+            color:[120,200,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var othersym_1 = {
+            type:"simple-fill",
+            color:"black",
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var ProvRenderer1 = {
+            type: "class-breaks",
+            field: "Senior",
+            defaultSymbol: othersym_1,
+            defaultLabel: "No Data",
+            classBreakInfos: [{
+                minValue:0,
+                maxValue: 10,
+                label: "< 10",
+                symbol: sym1_1,
+            },
+                {
+                    minValue: 10.00001,
+                    maxValue: 20,
+                    label: "8 - 36",
+                    symbol: sym2_2,
+                }, {
+                    minValue: 20.000001,
+                    maxValue: 30,
+                    label: "20 - 30",
+                    symbol: sym3_3,
+                }, {
+                    minValue: 30.000001,
+                    maxValue: 40,
+                    label: "30 - 40",
+                    symbol: sym4_4,
+                },{
+                    minValue: 40.000001,
+                    maxValue: 50,
+                    label: "40 - 50",
+                    symbol: sym5_5,
+                },
+                {
+                    minValue: 50.000001,
+                    maxValue: 100,
+                    label: "50 - 100",
+                    symbol: sym6_6,
+                }
+            ]
+        };
+        var searchpop = new FeatureLayer({
+            url:
+                "http://localhost:6080/arcgis/rest/services/test/GIS_study/MapServer/61",
+            renderer: ProvRenderer1,
+            outFields: ["*"],
+            popupTemplate: {
+                title: "...",
+                content: "..."
+            },
+            title:"学校分数查询图层",
+        });
+        mymap.add(searchpop);
+
+        searchpop.popupTemplate= {
+            title: "{School}学校复试分数",
+            content: [{
+                type: "fields",
+                fieldInfos: [
+                    { fieldName: "Line",
+                        visible: true,
+                        label: "该学校考研复试平均分数线为：",
+                        format: { places: 0, digitSeparator: true }
+                    }, { fieldName: "Exam",
+                        visible: true,
+                        label: "该学校招收人数为",
+                        format: { places: 0, digitSeparator: true }
+                    },
+                    { fieldName: "Senior",
+                        visible: true,
+                        label: "该学校平均正高级教师人数为",
+                        format: { places: 0, digitSeparator: true }
+
+                    },
+                    { fieldName: "Deputy_Sen",
+                        visible: true,
+                        label: "该学校平均副高级教师人数为",
+                        format: { places: 0, digitSeparator: true }
+                    },
+                    { fieldName: "Middle",
+                        visible: true,
+                        label: "该学校平均中级教师人数为",
+                        format: { places: 0, digitSeparator: true }
+                    }
+                ]
+            }]
+        }
+
+        //放大和缩小，默认自带
+        var zoom = new Zoom({
+            view: view,
+            layout: "horizontal"// Since: ArcGIS API for JavaScript 4.5
+            //Default Value: vertical;
+        });
+        view.ui.add("topbar", "top-right");
+        //测量距离和面积
+        document
+            .getElementById("distanceButton")
+            .addEventListener("click", function () {
+                setActiveWidget(null);
+                if (!this.classList.contains("active")) {
+                    setActiveWidget("distance");
+                } else {
+                    setActiveButton(null);
+                }
+            });
+        document
+            .getElementById("areaButton")
+            .addEventListener("click", function () {
+                setActiveWidget(null);
+                if (!this.classList.contains("active")) {
+                    setActiveWidget("area");
+                } else {
+                    setActiveButton(null);
+                }
+            });
+        function setActiveWidget(type) {
+            switch (type) {
+                case "distance":
+                    activeWidget = new DistanceMeasurement2D({
+                        view: view
+                    });
+
+                    // skip the initial 'new measurement' button
+                    activeWidget.viewModel.start();
+                    view.ui.add(activeWidget, "bottom-left");
+                    setActiveButton(document.getElementById("distanceButton"));
+                    break;
+                case "area":
+                    activeWidget = new AreaMeasurement2D({
+                        view: view
+                    });
+
+                    // skip the initial 'new measurement' button
+                    activeWidget.viewModel.start();
+                    view.ui.add(activeWidget, "bottom-left");
+                    setActiveButton(document.getElementById("areaButton"));
+                    break;
+                case null:
+                    if (activeWidget) {
+                        view.ui.remove(activeWidget);
+                        activeWidget.destroy();
+                        activeWidget = null;
+                    }
+                    break;
+            }
+        }
+        function setActiveButton(selectedButton) {
+            // focus the view to activate keyboard shortcuts for sketching
+            view.focus();
+            let elements = document.getElementsByClassName("active");
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].classList.remove("active");
+            }
+            if (selectedButton) {
+                selectedButton.classList.add("active");
+            }
+        }
+        //渲染
+        var sym1 = {
+            type:"simple-fill",
+            color:[236,252,204],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym2 = {
+            type:"simple-fill",
+            color:[218,240,158],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym3 = {
+            type:"simple-fill",
+            color:[199,227,113],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym4 = {
+            type:"simple-fill",
+            color:[180,217,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym5 = {
+            type:"simple-fill",
+            color:[150,217,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var sym6 = {
+            type:"simple-fill",
+            color:[120,200,69],
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var othersym = {
+            type:"simple-fill",
+            color:"black",
+            outline:{
+                color:[128,128,128,0.5],
+                width:"0.5px"
+            }
+        };
+        var ProvRenderer = {
+            type: "class-breaks",
+            field: "Exam",
+            defaultSymbol: othersym,
+            defaultLabel: "No Data",
+            classBreakInfos: [{
+                minValue:0,
+                maxValue: 10,
+                label: "< 10",
+                symbol: sym1,
+            },
+                {
+                    minValue: 10.00001,
+                    maxValue: 20,
+                    label: "8 - 36",
+                    symbol: sym2,
+                }, {
+                    minValue: 20.000001,
+                    maxValue: 40,
+                    label: "20 - 40",
+                    symbol: sym3,
+                }, {
+                    minValue: 40.000001,
+                    maxValue: 60,
+                    label: "40 - 60",
+                    symbol: sym4,
+                },{
+                    minValue: 60.000001,
+                    maxValue: 80,
+                    label: "60 - 80",
+                    symbol: sym5,
+                },
+                {
+                    minValue: 80.000001,
+                    maxValue: 100,
+                    label: "80 - 100",
+                    symbol: sym6,
+                }
+            ]
+        }
+        var proLyr1 = new FeatureLayer({
+            url:
+                "http://localhost:6080/arcgis/rest/services/test/GIS_study/MapServer/58",
+            renderer: ProvRenderer,
+            outFields: ["*"],
+            popupTemplate: {
+                title: "...",
+                content: "...",
+            },
+            title:"弹窗图层"
+        });
+        mymap.add(proLyr1);
+        //弹窗功能将学校与分数显示在窗口上
+        proLyr1.popupTemplate= {
+            title: "{NAME}省复试分数",
+            content: [{
+                type: "fields",
+                fieldInfos: [
+                    { fieldName: "Line",
+                        visible: true,
+                        label: "考研复试平均分数线为：",
+                        format: { places: 0, digitSeparator: true }
+                    }, { fieldName: "Exam",
+                        visible: true,
+                        label: "招收人数为",
+                        format: { places: 0, digitSeparator: true }
+                    }, { fieldName: "Push",
+                        visible: true,
+                        label: "推免人数为",
+                        format: { places: 0, digitSeparator: true }
+                    },
+                    { fieldName: "min",
+                        visible: true,
+                        label: "平均复试最低分为",
+                        format: { places: 0, digitSeparator: true }
+
+                    }, { fieldName: "max",
+                        visible: true,
+                        label: "平均复试最高分为",
+                        format: { places: 0, digitSeparator: true }
+                    }, { fieldName: "National_l",
+                        visible: true,
+                        label: "国家级平台个数为",
+                        format: { places: 0, digitSeparator: true }
+                    },
+                    { fieldName: "Province_l",
+                        visible: true,
+                        label: "省部级平台个数为",
+                        format: { places: 0, digitSeparator: true }
+                    },
+                    { fieldName: "First_mast",
+                        visible: true,
+                        label: "一级硕士点个数为",
+                        format: { places: 0, digitSeparator: true }
+                    }
+                ]
+            }]
+        }
+    });
+    </script>
+</head>
+<body>
+
+<div  class="top">
+    <h1 align="center">我国GIS专业研究生教育资源空间分布格局系统</h1></div>
+
+<div  id="menu">
+    <ul >
+        <li><a href="#">首页</a></li>
+        <li><a href="#">菜单1</a>
+            <ul>
+                <li><a href="#">菜单11</a></li>
+                <li><a href="#">菜单12</a></li>
+            </ul>
+        </li>
+        <li><a href="#">菜单2</a>
+            <ul>
+                <li><a href="#">菜单21</a></li>
+                <li><a href="#">菜单22</a></li>
+                <li><a href="#">菜单23</a></li>
+            </ul>
+        </li>
+        <li><a href="#">菜单3</a>
+            <ul>
+                <li><a href="#">菜单31</a></li>
+                <li><a href="#">菜单32</a></li>
+                <li><a href="#">菜单33</a></li>
+            </ul>
+        </li>
+        <li><a href="#">菜单4</a>
+            <ul>
+                <li><a href="#">菜单41</a></li>
+                <li><a href="#">菜单42</a></li>
+                <li><a href="#">菜单43</a></li>
+                <li><a href="#">菜单44</a></li>
+            </ul>
+        </li>
+        <li><a href="#">菜单5</a>
+            <ul>
+                <li><a href="#">菜单51</a></li>
+                <li><a href="#">菜单52</a></li>
+                <li><a href="#">菜单53</a></li>
+            </ul>
+        </li>
+    </ul>
+
+</div>
+
+<div class="main">
+    <div class="main-content">
+        <div id="viewDiv"></div>
+    </div>
+    <div id="search"></div>
+</div>
+<div class="left" >编辑工具
+    <!-- <div id="topbar1">
+         <button class="action-button esri-icon-blank-map-pin"
+                 id="pointButton" type="button" title="Draw_point"></button>
+         <button class="action-button esri-icon-line-of-sight"
+                 id="polylineButton" type="button" title="Draw_polyline"></button>
+         <button class="action-button esri-icon-polygon"
+                 id="polygonButton" type="button" title="Draw_polygon"></button>
+         <button class="action-button esri-icon-refresh"
+                 id="resetBtn" type="button" title="reset"></button>
+     </div>-->
+    <div id="topbar">
+        <button
+                class="action-button esri-icon-measure-line"
+                id="distanceButton"
+                type="button"
+                title="Measure distance between two or more points"
+        ></button>
+        <button
+                class="action-button esri-icon-measure-area"
+                id="areaButton"
+                type="button"
+                title="Measure area"
+        ></button>
+    </div>
+    <div id="sketch"></div>
+</div>
+<div class="right" id="layerlist">图例</div>
+<div class="clear" id="tell">作者：南京信息工程大学地理科学学院2020级地理信息科学1班尉文坛毕业设计
+    未经允许，不许盗用，商用，仅供学习参考，违者必究！联系邮箱：1736960668@qq.com
+    <div id="paneDiv1" class="esri-widget">
+        <div>
+            <p>
+                单击地图以将站点添加到路线中。计算从最后一个站点到新添加站点的路线。如果无法到达站点，则将最后一个有效点设置为起点。
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
